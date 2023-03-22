@@ -1,38 +1,103 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ReactJS NextJS кодын стандарт болон зарчимууд
 
-## Getting Started
+## Баримтлавал зохих зарчимууд
 
-First, run the development server:
+![SOLID Principles](https://miro.medium.com/max/1191/1*OzwARbvHUg1RlZ7LYyLCrg.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+### 1. SRP: Single Responsibility Principle
+
+SRP зарчимийн тодорхойлолт: Component бүр өөрийн ганц үүрэгтэй байхаар зохион бүтээх. Энэ нь code-ийг илүү readable, maintainable and scalable болгодог.
+
+**SRP ашиглаагүй жишээ**
+
+```js
+function ProductList({ products }) {
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    function handleSelectProduct(product) {
+        setSelectedProduct(product);
+    }
+
+    function handleAddToCart() {
+        // Add selected product to cart
+    }
+
+    return (
+        <div>
+            <ul>
+                {products.map((product) => (
+                    <li
+                        key={product.id}
+                        onClick={() => handleSelectProduct(product)}
+                    >
+                        <h2>{product.name}</h2>
+                        <p>{product.description}</p>
+                    </li>
+                ))}
+            </ul>
+            {selectedProduct && (
+                <div>
+                    <h2>{selectedProduct.name}</h2>
+                    <p>{selectedProduct.description}</p>
+                    <button onClick={handleAddToCart}>Add to Cart</button>
+                </div>
+            )}
+        </div>
+    );
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ингэснээр дуудаж ашиглаж байгаа parent component-ууд **onFocus**, **onBlur** гэх мэт event-үүдийг ашиглах боломжтой болох юм.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+**SRP ашигласан жишээ**
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```js
+function ProductList({ products }) {
+    return (
+        <ul>
+            {products.map((product) => (
+                <Product key={product.id} product={product} />
+            ))}
+        </ul>
+    );
+}
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+function Product({ product }) {
+    return (
+        <li>
+            <h2>{product.name}</h2>
+            <p>{product.description}</p>
+        </li>
+    );
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 2. OCP: Open-Closed Principle
 
-## Learn More
+OCP зарчимийн тодорхойлолт: Тухайн component өргөтгөл хийх боломжтой боловч өөрчлөхөд хаалттай байх ёстой. Жишээ нь **BUTTON** component дээр үзвэл. **BUTTON** component нь **Icon** харуулдаг гэж төсөөлье. Icon-ийг харуулахдаа **role** гэдэг prop-оор өөр өөр icon харуулах ёстой. Хэрэв OCP ашиглаагүй бол дараах байдалтай бичигдэх нь.
 
-To learn more about Next.js, take a look at the following resources:
+### 3. LCP: Liskov Substitution Principle
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+LCP зарчимын тодорхойлолт: Тухайн component нь supertype буюу native element-ийн attributes-ийг дэмждэг байхаар хийх. Жишээ нь search хийдэг **input text** component хийе гэж бодьё. Хэрэв тухайн component-ийг зөвхөн search хийдэг байдлаар хийе гэвэл зөвхөн **value**, **onChange** гэсэн function дамжуулахад хангалттай. Код дараах хэлбэртэй.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 4. ICP: Interface Segregation Principle
 
-## Deploy on Vercel
+ICP зарчимын тодорхойлолт: Тухайн component шаардлагагүй **Interface**-ээс хамаарах ёсгүй. Жишээ нь Product component-ийн зурагийг нь харуулдаг **Thumbnail** component байя гэж бодьё. **Thumbnail** component нь зөвхөн alt text-тэй img tag байна гэж үзвэл **Thumbnail** component нь **Product** interface-ийг бүтнээр авдаг байх нь буруу гэсэн үг.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. DIP - Dependency Inversion Principle
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+DIP зарчимын тодорхойлолт: Хараат байдлын урвуу зарчим. Нэн чухал шаардлагатай гэж үзээгүй тул оруулсангүй. Бас сайн ойлгосонгүй.
+
+![More Principles](https://miro.medium.com/max/3800/1*RQJCJDy_JxfRXPvSpkN3Jg.png)
+
+### 1. YAGNI: You Aren't Gonna Need It
+
+Хэрэгцээгүй шинэ функц, нэмэлтээр оруулах хэрэггүй. Ирээдүйд хэрэг болж юуны магад гээд нэмэлтээр юм оруулчих тал байдаг. Гэвч ашиглагдахгүй удсан тохиолдолд, хэсэг хугацааны дараа энийг юунд ашигладаг юм бол? яах гэж оруулсан юм бол? гэх асуултуудыг бий болж ирэх нь бий.
+
+### 2. KISS: Keep It Simple Stupid
+
+Аль болох энгийнээр бичигдсэн байх. Илүүдэл ойлгоход хэцүү ярвигтай зүйл бичихээс зайлсхийх, жижиг хэсгүүдэд хувааж энгийн болгох. Гэхдээ хэт амарчилж болохгүй.
+
+### 3. DRY: Don't Repeat Yourself
+
+Нэг бичсэн кодоо дахин давтахгүй байх. Анхлан бичигчдэд их тохиолддог. Олон газар давхардсан кодууд ашиглах нь дараа засаж сайжруулах үед бүгдийг өөрчлөх шаардлага гарч мэднэ. Энэ үед маш их цаг хүч шаардагддаг.
