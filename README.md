@@ -2,44 +2,47 @@
 
 ## Баримтлавал зохих зарчимууд
 
+## SOLID
+
 ![SOLID Principles](https://miro.medium.com/max/1191/1*OzwARbvHUg1RlZ7LYyLCrg.png)
 
 ### 1. SRP: Single Responsibility Principle
 
-SRP зарчимийн тодорхойлолт: Component бүр өөрийн ганц үүрэгтэй байхаар зохион бүтээх. Энэ нь code-ийг илүү readable, maintainable and scalable болгодог.
+Тодорхойлолт: Component бүр өөрийн ганц үүрэгтэй байхаар зохион бүтээх. Энэ нь code-ийг илүү readable, maintainable and scalable болгодог.
+Хэрэв бүрэлдэхүүн хэсэг нь олон үүрэгтэй бол түүнийг засварлах, шалгахад хэцүү болно.
 
 **SRP ашиглаагүй жишээ**
 
 ```js
-function ProductList({ products }) {
-    const [selectedProduct, setSelectedProduct] = useState(null);
+function UserProfile() {
+    const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    function handleSelectProduct(product) {
-        setSelectedProduct(product);
-    }
-
-    function handleAddToCart() {
-        // Add selected product to cart
-    }
+    useEffect(() => {
+        fetch('https://api.example.com/users/123')
+            .then((response) => response.json())
+            .then((data) => {
+                setUser(data);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                setError(error);
+                setIsLoading(false);
+            });
+    }, []);
 
     return (
         <div>
-            <ul>
-                {products.map((product) => (
-                    <li
-                        key={product.id}
-                        onClick={() => handleSelectProduct(product)}
-                    >
-                        <h2>{product.name}</h2>
-                        <p>{product.description}</p>
-                    </li>
-                ))}
-            </ul>
-            {selectedProduct && (
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p>Error: {error.message}</p>
+            ) : (
                 <div>
-                    <h2>{selectedProduct.name}</h2>
-                    <p>{selectedProduct.description}</p>
-                    <button onClick={handleAddToCart}>Add to Cart</button>
+                    <h2>User Profile</h2>
+                    <p>Name: {user.name}</p>
+                    <p>Email: {user.email}</p>
                 </div>
             )}
         </div>
@@ -47,142 +50,129 @@ function ProductList({ products }) {
 }
 ```
 
-In the above example, the ProductList component has multiple responsibilities. It not only renders the list of products but also handles the selection of a product and adding it to the cart. This violates the SRP and makes the component difficult to maintain and test.
-
-Дээрх жишээн дээр ProductList бүрэлдэхүүн хэсэг нь олон үүрэг хариуцлагатай байдаг. Энэ нь зөвхөн бүтээгдэхүүний жагсаалтыг гаргахаас гадна бүтээгдэхүүнийг сонгох, сагсанд нэмэх ажлыг гүйцэтгэдэг. Энэ нь SRP-г зөрчиж, бүрэлдэхүүн хэсгийг засварлах, туршихад хэцүү болгодог.
-
 **SRP ашигласан жишээ**
 
 ```js
-function ProductList({ products }) {
-    return (
-        <ul>
-            {products.map((product) => (
-                <Product key={product.id} product={product} />
-            ))}
-        </ul>
-    );
-}
+function UserProfile() {
+    const [user, setUser] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-function Product({ product }) {
-    return (
-        <li>
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-        </li>
-    );
-}
-```
+    useEffect(() => {
+        fetch('https://api.example.com/users/123')
+            .then((response) => response.json())
+            .then((data) => {
+                setUser(data);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                setError(error);
+                setIsLoading(false);
+            });
+    }, []);
 
-In the above example, the ProductList component only renders a list of products, and the Product component only renders the details of a single product. Both components have a single responsibility.
-
-Дээрх жишээн дээр ProductList бүрэлдэхүүн нь зөвхөн бүтээгдэхүүний жагсаалтыг гаргадаг бөгөөд Бүтээгдэхүүний бүрэлдэхүүн хэсэг нь зөвхөн нэг бүтээгдэхүүний дэлгэрэнгүй мэдээллийг өгдөг. Хоёр бүрэлдэхүүн хэсэг нь нэг үүрэг хариуцлагатай байдаг.
-
-### 2. OCP: Open-Closed Principle
-
-OCP зарчимийн тодорхойлолт: Тухайн component өргөтгөл хийх боломжтой боловч өөрчлөхөд хаалттай байх ёстой. Жишээ нь **BUTTON** component дээр үзвэл. **BUTTON** component нь **Icon** харуулдаг гэж төсөөлье. Icon-ийг харуулахдаа **role** гэдэг prop-оор өөр өөр icon харуулах ёстой. Хэрэв OCP ашиглаагүй бол дараах байдалтай бичигдэх нь.
-
-**OCP ашиглаагүй жишээ**
-
-```js
-function Product({ product }) {
-    const [quantity, setquantity] = useState(1);
-
-    function handleAddToCart() {
-        // Add product to cart with the selected quantity
-    }
-
-    function handleIncrement() {
-        setQuantity(quantity + 1);
-    }
-
-    function handleDecrement() {
-        setQuantity(quantity - 1);
-    }
-
-    return (
-        <li>
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-            <div>
-                <button onClick={handleDecrement}>-</button>
-                <span>{quantity}</span>
-                <button onClick={handleIncrement}>+</button>
-            </div>
-            <button onClick={handleAddToCart}>Add to Cart</button>
-        </li>
-    );
-}
-```
-
-In the above example, the `Product` component has a new feature where the user can select the quantity of the product to add to the cart. However, this violates the OCP because the component's internal implementation was modified to handle the new feature. A better approach would be to create a separate `QuantitySelector` component that can be passed as a prop to the `Product` component.
-
-Дээрх жишээн дээр "Бүтээгдэхүүний" бүрэлдэхүүн хэсэг нь шинэ функцтэй бөгөөд хэрэглэгч сагсанд нэмэх бүтээгдэхүүнийхээ хэмжээг сонгох боломжтой. Гэсэн хэдий ч, шинэ функцийг зохицуулахын тулд бүрэлдэхүүн хэсгийн дотоод хэрэгжилтийг өөрчилсөн тул энэ нь OCP-ийг зөрчиж байна. Илүү сайн арга бол "Бүтээгдэхүүний" бүрэлдэхүүн хэсэгт тулгуур болгон дамжуулж болох "QuantitySelector" тусдаа бүрэлдэхүүн хэсгийг бий болгох явдал юм.
-
-**OCP ашигласан жишээ**
-
-```js
-function Product({ product, onAddToCart }) {
-    return (
-        <li>
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-            <button onClick={onAddToCart}>Add to Cart</button>
-        </li>
-    );
-}
-```
-
-In the above example, the Product component accepts a onAddToCart prop, which is a callback function that will be called when the "Add to Cart" button is clicked. This makes the component open for extension because new functionality can be added by passing a different callback function to the component.
-
-Дээрх жишээн дээр Бүтээгдэхүүний бүрэлдэхүүн хэсэг нь onAddToCart тулгуурыг хүлээн авдаг бөгөөд энэ нь "Сагсанд нэмэх" товчийг дарахад дуудагдах дуудлагын функц юм. Энэ нь бүрэлдэхүүн хэсэг рүү залгах өөр функцийг дамжуулснаар шинэ функцийг нэмж болох тул өргөтгөл хийх боломжтой болгодог.
-
-### 3. LCP: Liskov Substitution Principle
-
-LCP зарчимын тодорхойлолт: Тухайн component нь supertype буюу native element-ийн attributes-ийг дэмждэг байхаар хийх. Жишээ нь search хийдэг **input text** component хийе гэж бодьё. Хэрэв тухайн component-ийг зөвхөн search хийдэг байдлаар хийе гэвэл зөвхөн **value**, **onChange** гэсэн function дамжуулахад хангалттай. Код дараах хэлбэртэй.
-
-**LCP ашиглаагүй жишээ**
-
-```js
-class BaseComponent extends React.Component {
-    // base component implementation
-}
-
-class SubComponent extends BaseComponent {
-    // modified subcomponent implementation
-}
-
-function App() {
     return (
         <div>
-            <BaseComponent />
-            <SubComponent />
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p>Error: {error.message}</p>
+            ) : (
+                <UserProfileDisplay user={user} />
+            )}
+        </div>
+    );
+}
+
+function UserProfileDisplay(props) {
+    return (
+        <div>
+            <h2>User Profile</h2>
+            <p>Name: {props.user.name}</p>
+            <p>Email: {props.user.email}</p>
         </div>
     );
 }
 ```
 
-text
+### 2. OCP: Open-Closed Principle
+
+OCP нь class эсвэл модулийг өргөтгөхөд нээлттэй боловч өөрчлөхөд хаалттай байх ёстой. Component хэсэг нь шинэ props эсвэл state-ийг хүлээн авахад нээлттэй байх ёстой, гэхдээ түүний дотоод хэрэгжилтийг өөрчлөх ёсгүй.
+
+**OCP ашиглаагүй жишээ**
+
+```js
+function Button(props) {
+    const { label, onClick, color } = props;
+
+    return (
+        <button onClick={onClick} style={{ backgroundColor: color }}>
+            {label}
+        </button>
+    );
+}
+```
+
+**OCP ашигласан жишээ**
+
+```js
+function BaseButton(props) {
+    const { label, onClick, style } = props;
+
+    return (
+        <button onClick={onClick} style={style}>
+            {label}
+        </button>
+    );
+}
+```
+
+### 3. LCP: Liskov Substitution Principle
+
+LCP зарчимын тодорхойлолт: Тухайн component нь supertype буюу native element-ийн attributes-ийг дэмждэг байхаар хийх. Child component нь програмын үйл ажиллагаанд нөлөөлөхгүйгээр parent component-г орлуулах боломжтой байх ёстой.
+
+**LCP ашиглаагүй жишээ**
+
+```js
+export function SearchInput(props) {
+    const { value, onChange } = props;
+
+    return (
+        <input
+            type="search"
+            id="default-search"
+            placeholder="Search for the right one..."
+            required
+            value={value}
+            onChange={onChange}
+        />
+    );
+}
+```
 
 **LCP ашигласан жишээ**
 
 ```js
-class BaseComponent extends React.Component {
-    // base component implementation
-}
+export function SearchInput(props: ISearchInputProps) {
+    const { value, isLarge, ...restProps } = props;
 
-class SubComponent extends BaseComponent {
-    // subcomponent implementation
+    return (
+        <input
+            type="search"
+            id="default-search"
+            placeholder="Search for the right one..."
+            className={`${isLarge ? 'w-full' : 'w-auto'}`}
+            required
+            value={value}
+            {...restProps}
+        />
+    );
 }
 ```
 
-In the above example, the `SubComponent` extends the `BaseComponent` and can be used interchangeably with the `BaseComponent` without affecting the behavior of the app. This follows the LSP.
-
-Дээрх жишээн дээр `Дэд бүрэлдэхүүн` нь `BaseComponent`-ийг өргөтгөж, програмын үйл ажиллагаанд нөлөөлөхгүйгээр `BaseComponent`-тэй сольж ашиглаж болно. Энэ нь LSP-ийг дагаж мөрддөг.
-
 ### 4. ICP: Interface Segregation Principle
 
-ICP зарчимын тодорхойлолт: Тухайн component шаардлагагүй **Interface**-ээс хамаарах ёсгүй. Жишээ нь Product component-ийн зурагийг нь харуулдаг **Thumbnail** component байя гэж бодьё. **Thumbnail** component нь зөвхөн alt text-тэй img tag байна гэж үзвэл **Thumbnail** component нь **Product** interface-ийг бүтнээр авдаг байх нь буруу гэсэн үг.
+ICP зарчимын тодорхойлолт: Тухайн component шаардлагагүй **Interface**-ээс хамаарах ёсгүй.
 
 **ICP ашиглаагүй жишээ**
 
@@ -212,8 +202,6 @@ function App() {
 }
 ```
 
-text
-
 **ICP ашигласан жишээ**
 
 ```js
@@ -225,15 +213,31 @@ function Product({ name, description }) {
         </li>
     );
 }
+
+function App() {
+    const products = [
+        { id: 1, name: 'Product 1', description: 'Description 1', price: 10 },
+        { id: 2, name: 'Product 2', description: 'Description 2', price: 20 },
+    ];
+
+    return (
+        <ul>
+            {products.map((product) => (
+                <Product
+                    key={product.id}
+                    name={product.name}
+                    description={product.description}
+                />
+            ))}
+        </ul>
+    );
+}
 ```
-
-In the above example, the `Product` component only receives the `name` and `description` props that it uses. This follows the ISP.
-
-Дээрх жишээн дээр "Бүтээгдэхүүний" бүрэлдэхүүн хэсэг нь зөвхөн өөрийн ашигладаг "нэр" болон "тайлбар"-ыг хүлээн авдаг. Энэ нь ISP-ийг дагаж мөрддөг.
 
 ### 5. DIP - Dependency Inversion Principle
 
 DIP зарчимын тодорхойлолт: Хараат байдлын урвуу зарчим. Нэн чухал шаардлагатай гэж үзээгүй тул оруулсангүй. Бас сайн ойлгосонгүй.
+DIP нь өндөр түвшний модулиуд нь доод түвшний модулиудаас хамаарах ёсгүй гэж заасан. Аль аль нь хийсвэрлэлээс хамаарах ёстой. ReactJS-д энэ зарчмыг бүрэлдэхүүн хэсгийн хамааралд хэрэглэж болно. Бүрэлдэхүүн хэсэг нь тодорхой хэрэгжилтийн оронд хийсвэрлэлээс хамаарах ёстой.
 
 **DIP ашиглаагүй жишээ**
 
@@ -257,10 +261,6 @@ function ProductList() {
 }
 ```
 
-In the above example, the ProductList component depends on a concrete implementation (fetch('/api/products')) instead of an abstraction. This makes the component less flexible and harder to test.
-
-Дээрх жишээнд ProductList бүрэлдэхүүн хэсэг нь хийсвэрлэлийн оронд тодорхой хэрэгжилтээс (fetch('/api/products')) хамаардаг. Энэ нь бүрэлдэхүүн хэсгийг уян хатан бус болгож, шалгахад хэцүү болгодог.
-
 **DIP ашигласан жишээ**
 
 ```js
@@ -281,9 +281,7 @@ function ProductList({ productService }) {
 }
 ```
 
-In the above example, the ProductList component depends on the productService abstraction instead of a concrete implementation. This allows the component to be more flexible and easily testable.
-
-Дээрх жишээнд ProductList бүрэлдэхүүн хэсэг нь тодорхой хэрэгжилтийн оронд productService хийсвэрлэлээс хамаардаг. Энэ нь бүрэлдэхүүн хэсэг нь илүү уян хатан, амархан турших боломжийг олгодог.
+## Зарчимууд
 
 ![More Principles](https://miro.medium.com/max/3800/1*RQJCJDy_JxfRXPvSpkN3Jg.png)
 
