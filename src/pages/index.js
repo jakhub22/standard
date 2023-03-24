@@ -1,5 +1,10 @@
 import React from 'react';
+import { Hello } from 'mbank-component';
 
 export default function Home() {
-    return <div>HOME</div>;
+    return (
+        <div>
+            <Hello />
+        </div>
+    );
 }
