@@ -1,10 +1,12 @@
 import React from 'react';
-import { Hello } from 'mbank-component';
+import { Hello, Button, Bye } from 'mbank-component';
 
 export default function Home() {
     return (
         <div>
             <Hello />
+            <Button name="JAK" />
+            <Bye />
         </div>
     );
 }
