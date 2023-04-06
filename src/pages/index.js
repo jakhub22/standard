@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hello, Button, Bye } from 'mbank-component';
+import { Hello, Button, Bye, MIcon } from 'mbank-component';
 
 export default function Home() {
     return (
@@ -7,6 +7,7 @@ export default function Home() {
             <Hello />
             <Button name="JAK" />
             <Bye />
+            <MIcon name="bank" />
         </div>
     );
 }
