@@ -9,7 +9,7 @@ BASIC_TOKEN=test
 OAUTH_URL=test
 SIMPLE_GATEWAY_URL=test
 REDIS_HOST=test
-ENV=TEST" > .env
+ENV=TEST" > .env.local
 elif [ "$branch_name" = "pre" ]; then
    echo "Updating environment variables for branch $branch_name"
   echo "GATEWAY_URL=pre
@@ -18,7 +18,7 @@ OAUTH_URL=pre
 SIMPLE_GATEWAY_URL=pre
 REDIS_HOST=pre
 DOMAIN=pre
-ENV=PRE" > .env
+ENV=PRE" > .env.local
 elif [ "$branch_name" = "prod" ]; then
    echo "Updating environment variables for branch $branch_name"
   echo "GATEWAY_URL=prod
@@ -27,7 +27,7 @@ OAUTH_URL=prod
 SIMPLE_GATEWAY_URL=prod
 REDIS_HOST=prod
 prod=prod
-ENV=PROD" > .env
+ENV=PROD" > .env.local
 else
   echo "Unknown branch name: $branch_name"
 fi
