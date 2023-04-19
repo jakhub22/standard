@@ -1,28 +1,11 @@
 import { Layout, Menu } from 'antd';
-import { useEffect } from 'react';
-import { routes } from '@/src/routes';
+
 import { useMain } from '@/contexts/main';
 
 const { Sider } = Layout;
 
 export default function MSidebar() {
-    const { collapse, setcollapse } = useMain();
-
-    useEffect(() => {
-        let keyCount = 1;
-        addKeys(routes);
-
-        function addKeys(routes) {
-            routes.forEach((item) => {
-                item.key = keyCount.toString();
-                keyCount++;
-
-                if (item.children) {
-                    addKeys(item.children);
-                }
-            });
-        }
-    }, [routes]);
+    const { collapse, setcollapse, changeMenu, routers } = useMain();
 
     return (
         <Layout>
@@ -35,7 +18,8 @@ export default function MSidebar() {
                 <Menu
                     defaultSelectedKeys={['1']}
                     mode="inline"
-                    items={routes}
+                    items={routers}
+                    onClick={(e) => changeMenu(e.key)}
                 />
             </Sider>
         </Layout>
