@@ -1,0 +1,33 @@
+#!/bin/sh
+
+branch_name=$(git symbolic-ref --short HEAD)
+
+if [ "$branch_name" = "test" ]; then
+  echo "Updating environment variables for branch $branch_name"
+  echo "GATEWAY_URL=test
+BASIC_TOKEN=test
+OAUTH_URL=test
+SIMPLE_GATEWAY_URL=test
+REDIS_HOST=test
+ENV=TEST" > .env.local
+elif [ "$branch_name" = "pre" ]; then
+   echo "Updating environment variables for branch $branch_name"
+  echo "GATEWAY_URL=pre
+BASIC_TOKEN=pre
+OAUTH_URL=pre
+SIMPLE_GATEWAY_URL=pre
+REDIS_HOST=pre
+DOMAIN=pre
+ENV=PRE" > .env.local
+elif [ "$branch_name" = "prod" ]; then
+   echo "Updating environment variables for branch $branch_name"
+  echo "GATEWAY_URL=prod
+BASIC_TOKEN=prod
+OAUTH_URL=prod
+SIMPLE_GATEWAY_URL=prod
+REDIS_HOST=prod
+prod=prod
+ENV=PROD" > .env.local
+else
+  echo "Unknown branch name: $branch_name"
+fi
