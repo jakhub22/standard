@@ -394,7 +394,25 @@ onClick
 function onChangeHandle()
 ```
 
-### 4. Хувьсагч болон state-ийн нэрийг camelCase ашиглан бичих
+### 5. Функцын нэрийг хийж буй үйлдэлтэй уяалдуулан ойлгогдохоор бичих
+
+```js
+function onChangeUsername() {}
+
+function onClickTile() {}
+
+function onVisibleDialog() {}
+```
+
+### 5. Attribute ашиглан функц дуудахдаа суман функц ашиглах
+
+```js
+onClick = () => onVisibleDialog();
+
+onChange = (e) => onChangeEmail(e);
+```
+
+### 6. Хувьсагч болон state-ийн нэрийг camelCase ашиглан бичих
 
 ```js
 const variable = 'test';
@@ -402,7 +420,7 @@ let variableBoolean = true;
 const [userName, setUserName] = useState();
 ```
 
-### 5. Css файл үүсгэх бол харгалзах файлтай адил нэр ашиглан module css файл үүсгэх
+### 7. Css файл үүсгэх бол харгалзах файлтай адил нэр ашиглан module css файл үүсгэх
 
 ```js
 CookieBanner.js;
@@ -412,7 +430,7 @@ Header.js;
 Header.module.css;
 ```
 
-### 6. Кодыг уншиж ойлгоход хялбар байхын тулд догол болон зайг ашиглах.
+### 8. Кодыг уншиж ойлгоход хялбар байхын тулд догол болон зайг ашиглах.
 
 ```js
 import React from 'react';
@@ -436,7 +454,7 @@ function ExampleComponent(props) {
 export default ExampleComponent;
 ```
 
-### 7. Proptypes ашиглан Component-д шаардлагтай зүйлсийг тодорхойлж өгөх.
+### 9. Proptypes ашиглан Component-д шаардлагтай зүйлсийг тодорхойлж өгөх.
 
 ```js
 import React from 'react';
@@ -456,11 +474,11 @@ Button.propTypes = {
 export default Button;
 ```
 
-### 8. State management буюу context ашиглах
+### 10. State management буюу context ашиглах
 
 State management нь application болон system-ийн төлөвийг удирдах, шинэчлэх үйл явцыг хэлнэ.State management нь component болон модулиудыг өөр хоорондоо харилцах, програмын төлөв байдлыг тогтмол харах боломжийг олгодог тул нарийн төвөгтэй програмуудыг бий болгох чухал үүрэгтэй.
 
-### 9. Error Handling
+### 11. Error Handling
 
 Error Handling хийх нь алдааны message-ийг цэвэрлэх, зохион байгуулахаас гадна unexpected errors болон crashes-аас сэргийлнэ.
 
@@ -509,7 +527,7 @@ function LoginForm({ onSubmit }) {
 }
 ```
 
-### 10. Security
+### 12. Security
 
 Component-үүд нь аюулгүй байдлын үүднээс хийгдсэн эсэхийг шалгаарай. Аюулгүй код бичэж нийтлэг security vulnerabilities-үүдээс сэргийлээрэй.
 
@@ -571,6 +589,10 @@ export default LoginForm;
 
 Энэ жишээн дээр component-ийн төлөвийг manage хийхийн тулд useState hook ашигласан. Мөн props-ийг баталгаажуулахын тулд prop-types ашигласан. Аюулгүй байдлын үүднээс submit хийхийн өмнө username болон password хоосон байгаа эсэхийг шалгаж байна. Ингэснээрээ болзошгүй injection attack-аас сэргийлж өгнө. Мөн label element-д for-ийн оронд htmlFor ашигласанаараа Cross-Site Scripting (XSS) attack-аас сэргийлэх юм. Нэмэлтээр prop-types-д isRequired prop зарласнаараа component рүү onSubmit prop-оор дамжуулагдагж байгааг баталгаажуулах юм.
 
-### 10. Code Review
+### 13. Code Review
 
 Component-үүд нь кодчиллын стандарт, зарчимуудыг дагаж мөрдөж байгаа эсэхийг баталгаажуулахын тулд кодын хянан шалгах хэрэгтэй. Reviewers кодын чанар, үйл ажиллагааны талаар санал хүсэлтээ өгөх ёстой.
+
+## Бусад
+
+### EsLint, Prettier гэх мэт extensions ашиглах
