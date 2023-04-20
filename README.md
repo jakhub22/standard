@@ -8,13 +8,13 @@
 
 ### 1. SRP: Single Responsibility Principle
 
-Тодорхойлолт: Component бүр өөрийн ганц үүрэгтэй байхаар зохион бүтээх. Энэ нь code-ийг илүү readable, maintainable and scalable болгодог.
-Хэрэв бүрэлдэхүүн хэсэг нь олон үүрэгтэй бол түүнийг засварлах, шалгахад хэцүү болно.
+Тодорхойлолт: Component бүр өөрийн ганц үүрэгтэй байхаар зохион бүтээх.
 
 **SRP ашиглаагүй жишээ**
 
 ```js
-function UserProfile() {
+function UserProfile(props) {
+    const { blog } = props;
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -40,9 +40,16 @@ function UserProfile() {
                 <p>Error: {error.message}</p>
             ) : (
                 <div>
-                    <h2>User Profile</h2>
-                    <p>Name: {user.name}</p>
-                    <p>Email: {user.email}</p>
+                    <div>
+                        <h2>User Profile</h2>
+                        <p>Name: {user.name}</p>
+                        <p>Email: {user.email}</p>
+                    </div>
+                    <div>
+                        <h2>Blogs</h2>
+                        <p>Title: {blog.title}</p>
+                        <p>{blog.data}</p>
+                    </div>
                 </div>
             )}
         </div>
@@ -97,39 +104,59 @@ function UserProfileDisplay(props) {
 
 ### 2. OCP: Open-Closed Principle
 
-Тодорхойлолт: OCP нь class эсвэл модулийг өргөтгөхөд нээлттэй боловч өөрчлөхөд хаалттай байх ёстой. Component хэсэг нь шинэ props эсвэл state-ийг хүлээн авахад нээлттэй байх ёстой, гэхдээ түүний дотоод хэрэгжилтийг өөрчлөх ёсгүй.
+Тодорхойлолт: OCP нь component-ийг өргөтгөхөд нээлттэй боловч өөрчлөхөд хаалттай байх ёстой.
 
 **OCP ашиглаагүй жишээ**
 
 ```js
-function Button(props) {
-    const { label, onClick, color } = props;
+import {
+    HiOutlineArrowNarrowRight,
+    HiOutlineArrowNarrowLeft,
+} from 'react-icons/hi';
+
+export function Button(props) {
+    const { text, role } = props;
 
     return (
-        <button onClick={onClick} style={{ backgroundColor: color }}>
-            {label}
+        <button
+            className="flex items-center rounded-xl bg-gray-200 pt-4 pb-4 pl-8 pr-8 font-bold text-black outline-none"
+            {...props}
+        >
+            {text}
+            <div className="m-2">
+                {role === 'forward' && <HiOutlineArrowNarrowRight />}
+                {role === 'back' && <HiOutlineArrowNarrowLeft />}
+            </div>
         </button>
     );
 }
+
+<Button text="Go Home" role="forward" />;
 ```
 
 **OCP ашигласан жишээ**
 
 ```js
-function BaseButton(props) {
-    const { label, onClick, style } = props;
+export function Button(props) {
+    const { text, icon } = props;
 
     return (
-        <button onClick={onClick} style={style}>
-            {label}
+        <button
+            className="flex items-center rounded-xl bg-gray-200 pt-4 pb-4 pl-8 pr-8 font-bold text-black outline-none"
+            {...props}
+        >
+            {text}
+            <div className="m-2">{icon}</div>
         </button>
     );
 }
+
+<Button text="Go Home" icon={<HiOutlineArrowNarrowRight />} />;
 ```
 
 ### 3. LCP: Liskov Substitution Principle
 
-Тодорхойлолт: Тухайн component нь supertype буюу native element-ийн attributes-ийг дэмждэг байхаар хийх. Child component нь програмын үйл ажиллагаанд нөлөөлөхгүйгээр parent component-г орлуулах боломжтой байх ёстой.
+Тодорхойлолт: Тухайн component нь supertype буюу native element-ийн attributes-ийг дэмждэг байхаар хийх.
 
 **LCP ашиглаагүй жишээ**
 
@@ -236,49 +263,66 @@ function App() {
 
 ### 5. DIP - Dependency Inversion Principle
 
-Тодорхойлолт: Хараат байдлын урвуу зарчим. DIP нь өндөр түвшний модулиуд нь доод түвшний модулиудаас хамаарах ёсгүй гэж заасан. Аль аль нь хийсвэрлэлээс хамаарах ёстой. ReactJS-д энэ зарчмыг бүрэлдэхүүн хэсгийн хамааралд хэрэглэж болно. Бүрэлдэхүүн хэсэг нь тодорхой хэрэгжилтийн оронд хийсвэрлэлээс хамаарах ёстой.
+Тодорхойлолт: Хараат байдлын урвуу зарчим. DIP нь өндөр түвшний модулиуд нь доод түвшний модулиудаас хамаарах ёсгүй, гэхдээ хоёулаа хийсвэрлэлээс хамаарах ёстой. Хийсвэрлэл нь нарийн ширийн зүйлээс хамаарах ёсгүй, харин нарийн зүйл нь хийсвэрлэлээс хамаарах ёстой.
 
 **DIP ашиглаагүй жишээ**
 
 ```js
-function ProductList() {
-    const [products, setProducts] = useState([]);
+import React, { useState } from 'react';
 
-    useEffect(() => {
-        fetch('/api/products')
-            .then((response) => response.json())
-            .then(setProducts);
-    }, []);
+const Counter = () => {
+    const [count, setCount] = useState(0);
+
+    const handleClick = () => {
+        setCount(count + 1);
+    };
 
     return (
-        <ul>
-            {products.map((product) => (
-                <Product key={product.id} product={product} />
-            ))}
-        </ul>
+        <div>
+            <p>Count: {count}</p>
+            <button onClick={handleClick}>Increment</button>
+        </div>
     );
-}
+};
+
+export default Counter;
 ```
+
+Дээрх жишээн дээр Counter component нь useState-ээс шууд хамааралтай байна. Өндөр түвшний модуль (Counter) нь доод түвшний модулиас (useState) шууд хамааралтай байгаа тул энэ нь DIP-ийг зөрчиж байна.
 
 **DIP ашигласан жишээ**
 
 ```js
-function ProductList({ productService }) {
-    const [products, setProducts] = useState([]);
+import React from 'react';
 
-    useEffect(() => {
-        productService.getProducts().then(setProducts);
-    }, [productService]);
+const useCounter = () => {
+    const [count, setCount] = React.useState(0);
+
+    const handleClick = () => {
+        setCount(count + 1);
+    };
+
+    return {
+        count,
+        handleClick,
+    };
+};
+
+const Counter = () => {
+    const { count, handleClick } = useCounter();
 
     return (
-        <ul>
-            {products.map((product) => (
-                <Product key={product.id} product={product} />
-            ))}
-        </ul>
+        <div>
+            <p>Count: {count}</p>
+            <button onClick={handleClick}>Increment</button>
+        </div>
     );
-}
+};
+
+export default Counter;
 ```
+
+Дээрх жишээн дээр бид userCounter нэртэй custom hook ашигласан. Counter component нь useState hook-ийн тодорхой хэрэгжилтээс илүү хийсвэр useCounter hook-ээс хамаарна. Дээд түвшний модуль (Counter) нь доод түвшний модулиас (useState) бус хийсвэрлэлээс (useCounter) хамаардаг тул энэ нь DIP-ийг дагаж байна.
 
 ## Folder Structure
 
@@ -288,6 +332,7 @@ function ProductList({ productService }) {
     -   layout/
         -   Header.js
         -   Footer.js
+        -   Header.modile.css
     -   blog/
         -   Post.js
         -   Comment.js
@@ -513,3 +558,7 @@ export default LoginForm;
 ```
 
 Энэ жишээн дээр component-ийн төлөвийг manage хийхийн тулд useState hook ашигласан. Мөн props-ийг баталгаажуулахын тулд prop-types ашигласан. Аюулгүй байдлын үүднээс submit хийхийн өмнө username болон password хоосон байгаа эсэхийг шалгаж байна. Ингэснээрээ болзошгүй injection attack-аас сэргийлж өгнө. Мөн label element-д for-ийн оронд htmlFor ашигласанаараа Cross-Site Scripting (XSS) attack-аас сэргийлэх юм. Нэмэлтээр prop-types-д isRequired prop зарласнаараа component рүү onSubmit prop-оор дамжуулагдагж байгааг баталгаажуулах юм.
+
+### 10. Code Review
+
+Component-үүд нь кодчиллын стандарт, зарчимуудыг дагаж мөрдөж байгаа эсэхийг баталгаажуулахын тулд кодын хянан шалгах хэрэгтэй. Reviewers кодын чанар, үйл ажиллагааны талаар санал хүсэлтээ өгөх ёстой.
