@@ -360,45 +360,57 @@ export default Counter;
 
 ### 1. Component-ийн нэрийг PascalCase ашиглан бичих
 
-Header.js
-HeroBanner.js
-CookieBanner.js
-BlogListing.js
+```js
+Header.js;
+HeroBanner.js;
+CookieBanner.js;
+BlogListing.js;
+```
 
 ### 2. Component биш файлийн нэрийг camelCase ашиглан бичих
 
-myUtilityFile.js
-cookieHelper.js
-fetchApi.js
+```js
+myUtilityFile.js;
+cookieHelper.js;
+fetchApi.js;
+```
 
 ### 3. Unit тэст файлийн нэрийг харгалзах файлтай адил нэр ашиглан бичих
 
-CookieBanner.js
-CookieBanner.test.js
+```js
+CookieBanner.js;
+CookieBanner.test.js;
 
-fetchData.js
-fetchData.test.js
+fetchData.js;
+fetchData.test.js;
+```
 
 ### 4. Attribute болон parameter функцын нэрийг camelCase ашиглан бичих
 
+```js
 className
 onClick
 
 function onChangeHandle()
+```
 
 ### 4. Хувьсагч болон state-ийн нэрийг camelCase ашиглан бичих
 
+```js
 const variable = 'test';
 let variableBoolean = true;
-const [userName,setUserName] = useState();
+const [userName, setUserName] = useState();
+```
 
 ### 5. Css файл үүсгэх бол харгалзах файлтай адил нэр ашиглан module css файл үүсгэх
 
-CookieBanner.js
-CookieBanner.module.css
+```js
+CookieBanner.js;
+CookieBanner.module.css;
 
-Header.js
-Header.module.css
+Header.js;
+Header.module.css;
+```
 
 ### 6. Кодыг уншиж ойлгоход хялбар байхын тулд догол болон зайг ашиглах.
 
