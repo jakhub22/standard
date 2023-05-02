@@ -4,30 +4,30 @@ branch_name=$(git symbolic-ref --short HEAD)
 
 if [ "$branch_name" = "test" ]; then
   echo "Updating environment variables for branch $branch_name"
-  echo "GATEWAY_URL=test
-BASIC_TOKEN=test
-OAUTH_URL=test
-SIMPLE_GATEWAY_URL=test
-REDIS_HOST=test
-ENV=TEST" > .env.local
+  echo "GATEWAY_URL=test1
+BASIC_TOKEN=test1
+OAUTH_URL=test1
+SIMPLE_GATEWAY_URL=test1
+REDIS_HOST=test1
+ENV=TEST1" > .env.local
 elif [ "$branch_name" = "pre" ]; then
    echo "Updating environment variables for branch $branch_name"
-  echo "GATEWAY_URL=pre
-BASIC_TOKEN=pre
-OAUTH_URL=pre
-SIMPLE_GATEWAY_URL=pre
-REDIS_HOST=pre
-DOMAIN=pre
-ENV=PRE" > .env.local
+  echo "GATEWAY_URL=pre1
+BASIC_TOKEN=pre1
+OAUTH_URL=pre1
+SIMPLE_GATEWAY_URL=pre1
+REDIS_HOST=pre1
+DOMAIN=pre1
+ENV=PRE1" > .env.local
 elif [ "$branch_name" = "prod" ]; then
    echo "Updating environment variables for branch $branch_name"
-  echo "GATEWAY_URL=prod
-BASIC_TOKEN=prod
-OAUTH_URL=prod
-SIMPLE_GATEWAY_URL=prod
-REDIS_HOST=prod
-prod=prod
-ENV=PROD" > .env.local
+  echo "GATEWAY_URL=prod1
+BASIC_TOKEN=prod1
+OAUTH_URL=prod1
+SIMPLE_GATEWAY_URL=prod1
+REDIS_HOST=prod1
+prod=prod1
+ENV=PROD1" > .env.local
 else
   echo "Unknown branch name: $branch_name"
   echo "GATEWAY_URL=test
