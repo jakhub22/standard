@@ -30,4 +30,10 @@ prod=prod
 ENV=PROD" > .env.local
 else
   echo "Unknown branch name: $branch_name"
+  echo "GATEWAY_URL=test
+BASIC_TOKEN=test
+OAUTH_URL=test
+SIMPLE_GATEWAY_URL=test
+REDIS_HOST=test
+ENV=TEST" > .env.local
 fi
